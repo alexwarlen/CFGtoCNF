@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import javax.swing.*;
 
@@ -47,13 +48,19 @@ public class main extends JFrame{
 			//check all the things
 			
 		}
-		System.out.println("All existances of B0: ");
+		System.out.println("All existences of B0: ");
 		ArrayList<Integer[]> test = getPositions("B0");
 		for (Integer[] pos : test){
 			System.out.println(pos[0] + ", " + pos[1]);
 		}*/
-		
+		// STEP 2: Remove epsilons not in 1st line
 		moveE();
+
+        // STEP 3: Remove single non-terminal -> single non-terminal
+        removeRedundant();
+        System.out.println("After remove redundant:");
+        removeSingles();
+
 		printCurrentCFL();
 		System.out.println("In chomsky form: " + checkChomsky());
 		//checkStart();
@@ -426,11 +433,76 @@ public class main extends JFrame{
             for (int j = 1; j < cflInput.get(i).size(); j++){
                 if(cflInput.get(i).get(j).length() > 1){
                     System.out.println("Old line: " + cflInput.get(i).get(j).toString());
-                    cflInput.get(i).set(j, cflInput.get(i).get(j).replace("$", " "));
+                    cflInput.get(i).set(j, cflInput.get(i).get(j).replace("$", ""));
                     System.out.println("New line: "+ cflInput.get(i).get(j).toString());
                 }
             }
         }
+    }
+
+    public static void removeRedundant(){
+
+        for (int i = 0; i < numLines; i++) {
+
+            ArrayList<String> temp = new ArrayList<String>();
+            int duplicates = 0;
+            String nonTerminal = cflInput.get(i).get(0).toString();
+            for (int j = 1; j < cflInput.get(i).size(); j++) {
+                if (cflInput.get(i).get(j).toString().equals(nonTerminal)){
+                    duplicates++;
+                }
+                temp.add(cflInput.get(i).get(j));
+            }
+            System.out.println("REMOVE DUPLICATES: " + i);
+
+            for (int x = 0; x < duplicates; x++){
+
+                temp.remove(nonTerminal);
+            }
+            cflInput.get(i).clear();
+            cflInput.get(i).add(nonTerminal);
+
+            for (String a : temp){
+                cflInput.get(i).add(a);
+            }
+        }
+    }
+
+    public static void removeSingles(){
+
+        //for (int z = numLines -1; z >=0; z--) {
+            //String nonTerm = cflInput.get(z).get(0).toString();
+            for (int i = numLines - 1; i >= 0; i--) {
+                String nonTerm;
+
+                for (int j = 1; j < cflInput.get(i).size(); j++) {
+                    nonTerm= cflInput.get(i).get(j);
+                    if (nonTerm.length() == 1) {
+                        char letter = (char) nonTerm.charAt(0);
+                        // if the letter is single and uppercase
+                        if (letter > 64 && letter < 91) {
+                            for (int x = 0; x < numLines; x++) {
+
+                                if (cflInput.get(x).get(0).equals(letter + "")) {
+                                    copyContents(i, x);
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+            }
+       // }
+    }
+
+    public static void copyContents(int copyTo, int copyFrom){
+        for (int j = 1; j < cflInput.get(copyFrom).size(); j++){
+            String copying = cflInput.get(copyFrom).get(j);
+            cflInput.get(copyTo).add(copying);
+        }
+        System.out.println("After copying contents: ");
+        printCurrentCFL();
     }
 }
 		
