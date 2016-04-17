@@ -12,7 +12,7 @@ public class main extends JFrame{
 	public static ArrayList<ArrayList<String>> cflInput = new ArrayList<ArrayList<String>>();
 	public static int numLines;
     public static ArrayList<String> extraNonTerminals = new ArrayList<String>();
-    public static String[] extras =     {"O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+    public static String[] extras =     {"P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     public static String[] mapExtras = {"", "","","","","","","","","","","","","","","",""};
 
 
@@ -41,7 +41,7 @@ public class main extends JFrame{
 			}
 			cflInput.add(row);
 		}*/
-        ArrayList<String> row1 = new ArrayList<String>();
+        /*ArrayList<String> row1 = new ArrayList<String>();
         row1.add("C");
         row1.add("ACC");
         row1.add("aB");
@@ -56,10 +56,34 @@ public class main extends JFrame{
         cflInput.add(row1);
         cflInput.add(row2);
         cflInput.add(row3);
+        numLines = 3;*/
+        ArrayList<String> row1 = new ArrayList<String>();
+        row1.add("H");
+        row1.add("aA");
+
+        ArrayList<String> row2 = new ArrayList<String>();
+        row2.add("A");
+        row2.add("aB");
+        row2.add("bB");
+        row2.add("$");
+        ArrayList<String> row3 = new ArrayList<String>();
+        row3.add("B");
+        row3.add("A");
+        row3.add("c");
+        cflInput.add(row1);
+        cflInput.add(row2);
+        cflInput.add(row3);
         numLines = 3;
-		
-		System.out.println("The CFL you have entered is:");
-		printCurrentCFL();
+        System.out.println("The CFL you have entered is:");
+        printCurrentCFL();
+
+        if(checkChomsky()){
+            System.out.println("Your CFL is already in CNF:");
+            printCurrentCFL();
+            return;
+        }
+
+
 		//call new method
 		newStart();
 		System.out.println(cflInput.get(2).get(0));
@@ -80,6 +104,9 @@ public class main extends JFrame{
         // STEP 3: Remove single non-terminal -> single non-terminal
         removeRedundant();
         System.out.println("After remove redundant:");
+        printCurrentCFL();
+
+        System.out.println("After removing singles");
         removeSingles();
 
 		printCurrentCFL();
@@ -245,7 +272,8 @@ public class main extends JFrame{
 	}
 	
 	public static int[] ePosition(int startLine){
-		int[] tuple = new int[2];
+		startLine = numLines - 1;
+        int[] tuple = new int[2];
 		
 		for (int i = startLine; i >= 0; i--){
 			
@@ -297,6 +325,9 @@ public class main extends JFrame{
 				for(int a : tuple){
 					System.out.println("Tuple: " + a);
 				}
+                //if (endOfNonTerm >= cflInput.get(tuple[0]).get(tuple[1]).length()){
+
+                //}
 				
 				// if the non terminal length is 2 and it is at the end of the string
 				if (tuple[3] == 2 && (tuple[2]+tuple[3] >= tuple[4])){
@@ -351,7 +382,8 @@ public class main extends JFrame{
 	}
 	
 	public static ArrayList<Integer[]> getPositions(String nonTerminal, int lastLine){
-		ArrayList<Integer[]> positions = new ArrayList<Integer[]>();
+		lastLine = numLines-1;
+        ArrayList<Integer[]> positions = new ArrayList<Integer[]>();
 		char[] nonTermChars = new char[2];
 		if (nonTerminal.length() == 2){
 			nonTermChars[0] = nonTerminal.charAt(0);
@@ -365,7 +397,7 @@ public class main extends JFrame{
 		}
 		
 		
-		for (int i = 0; i < lastLine; i++){
+		for (int i = 0; i < lastLine+1; i++){
 			
 			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
 				
@@ -514,7 +546,6 @@ public class main extends JFrame{
                             for (int x = 0; x < numLines; x++) {
 
                                 if (cflInput.get(x).get(0).equals(letter + "")) {
-
                                     copyContents(i, x);
                                 }
                             }
