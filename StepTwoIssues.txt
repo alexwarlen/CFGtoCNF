@@ -1,0 +1,20 @@
+ok so here's the deal:
+
+1. need to figure out why extra epsilon is being put on lines it shouldn't
+	- i think it's because if a nonterminal has an epsilon in it, and then
+	another nonterminal has that nonterminal character in it, then it places an epislon there too
+
+		ie
+	A-> S | $
+	S-> A
+=====
+	A-> S
+	S-> A | $
+
+dollar sign, epsilon, shouldn't be there
+
+2. a lot of epsilons get placed like A$A, $a, blah blah blah
+	- so, do we get rid of all the epsilon terminals that have multiple things in them?
+		- and then calculate what extra stuff should be put on the lines
+	- or, do we calculate what needs to go on the lines, trying to find a correlation between what the
+	program is doing now and what we need it to do.

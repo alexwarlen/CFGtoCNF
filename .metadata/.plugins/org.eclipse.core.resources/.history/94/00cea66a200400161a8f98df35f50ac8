@@ -1,0 +1,376 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+
+
+public class main extends JFrame{
+	
+	
+	
+	public static ArrayList<ArrayList<String>> cflInput = new ArrayList<ArrayList<String>>();
+	public static int numLines;
+	
+	public static void main(String[] args) {
+		Scanner keyboard = new Scanner(System.in);
+		
+		System.out.println("How many lines?");
+		numLines = Integer.parseInt(keyboard.nextLine());
+		
+		for (int i = 0; i < numLines; i++){
+			System.out.println("Enter non terminal");
+			String nonTerminal = keyboard.nextLine();
+			ArrayList<String> row = new ArrayList<String>();
+			row.add(nonTerminal);
+			String nextRule = "";
+			while(!nextRule.equals("done"))
+			{
+				System.out.println("Enter next rule in row");
+				nextRule = keyboard.nextLine();
+				if(!nextRule.equals("done"))
+				{
+					row.add(nextRule);
+				}
+				
+			}
+			cflInput.add(row);
+		}
+		
+		System.out.println("The CFL you have entered is:");
+		printCurrentCFL();
+		//call new method
+		newStart();
+		System.out.println(cflInput.get(2).get(0));
+		//printCurrentCFL();
+		/*while(!checkChomsky())
+		{
+			//check all the things
+			
+		}
+		System.out.println("All existances of B0: ");
+		ArrayList<Integer[]> test = getPositions("B0");
+		for (Integer[] pos : test){
+			System.out.println(pos[0] + ", " + pos[1]);
+		}*/
+		
+		moveE();
+		printCurrentCFL();
+		System.out.println("In chomsky form: " + checkChomsky());
+		//checkStart();
+		
+	}
+	
+	
+	/*
+	 * So, we have to eliminate A -> $ rules before adding the new start rule
+	 * BECAUSE just copying over the first line to the top line won't be correct, see coursepack
+	 */
+	public static void checkStart()
+	{
+		
+			//numLines++; //this is to account for the newline added
+			
+			ArrayList<String> row2 = new ArrayList<String>();
+			for(int j=0; j < cflInput.get(1).size(); j++)
+			{
+				if(!(j == 0))
+				{
+					row2.add(cflInput.get(1).get(j));
+				}
+			}
+			
+			cflInput.add(0, row2);
+			
+	
+			System.out.println("New CFL: ");
+			//print out to check for correctness
+			for (int i = 0; i < numLines; i++){
+				for (int j = 0; j < cflInput.get(i).size(); j++){
+					if (j == 1){
+						System.out.print(" --> ");
+					}
+					if (j > 1){
+						System.out.print(" | ");
+					}
+					System.out.print(cflInput.get(i).get(j));
+					
+				}
+				System.out.print("\n");
+			}
+			
+	}
+	
+	//check if we did the chomsky-ing
+	private static boolean checkChomsky()
+	{
+		
+		for (int i = 0; i < numLines; i++){
+			//System.out.println("Made it again: " + cflInput.get(0).size());
+			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
+				int upperCount = 0;
+				int lowerCount = 0;
+				
+				String contents = cflInput.get(i).get(j);
+				
+				for (int x = 0; x < contents.length(); x++){
+					char curLetter = contents.charAt(x);
+					if (curLetter > 96 && curLetter < 123){
+						//lowercase
+						lowerCount++;
+					}
+					else if (curLetter > 64 && curLetter < 91){
+						upperCount++;
+					}
+					if ((curLetter == '$') && (i > 0)){
+						return false;
+					}
+					
+				}
+				if (!((upperCount == 2 && lowerCount == 0) || (lowerCount == 1 && upperCount == 0))){
+					return false;
+				}
+				
+				
+			}
+			
+		}
+		
+		
+		return true;
+	}
+	
+	public static void printCurrentCFL(){
+		for (int i = 0; i < numLines; i++){
+			for (int j = 0; j < cflInput.get(i).size(); j++){
+				if (j == 1){
+					System.out.print(" --> ");
+				}
+				if (j > 1){
+					System.out.print(" | ");
+				}
+				System.out.print(cflInput.get(i).get(j));
+				
+			}
+			System.out.print("\n");
+		}
+	}
+	
+	private static void newStart()
+	{
+		numLines++;
+		
+		ArrayList<String> row2 = new ArrayList<String>();
+		String newRule = cflInput.get(0).get(0);
+		String newStart = newRule + '0';
+		
+		row2.add(newStart);
+		row2.add(newRule);
+		
+		cflInput.add(0, row2);
+		
+	}
+	
+	public static boolean properEFormat()
+	{
+		for (int i = 0; i < numLines; i++){
+			//System.out.println("Made it again: " + cflInput.get(0).size());
+			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
+				
+				
+				String contents = cflInput.get(i).get(j);
+				
+				for (int x = 0; x < contents.length(); x++){
+					char curLetter = contents.charAt(x);
+					
+					if ((curLetter == '$') && (i > 0)){
+						return false;
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		
+		return true;
+	}
+	
+	public static int[] ePosition(){
+		int[] tuple = new int[2];
+		
+		for (int i = numLines -1; i >= 0; i--){
+			
+			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
+				String contents = cflInput.get(i).get(j);
+				
+				for (int x = 0; x < contents.length(); x++){
+					char curLetter = contents.charAt(x);
+					
+					if ((curLetter == '$')){
+						tuple[0] = i;
+						tuple[1] = j;
+						return tuple;
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		return tuple;
+	}
+	
+	public static void moveE()
+	{
+		int i = 3;
+		//while (!properEFormat()) {
+		while(i > 1){
+			int[] ePos = ePosition();
+			System.out.println("E found at position: " + ePos[0] +", " + ePos[1]);
+			if (ePos.length == 0){
+				return;
+			}
+			// get the start variable of the line with the epsilon
+			String startVar = cflInput.get(ePos[0]).get(0);
+			// get all positions in the CFG with that variable on the right hand side
+			ArrayList<Integer[]> positions = getPositions(startVar);
+			
+			for (Integer[] tuple : positions){
+				// Inspect how to get the end of the string, getting an out of bounds exception because it's going too far... :( 
+				int startOfNonTerm = tuple[2];
+				int endOfNonTerm = tuple[2] + tuple[3];
+				
+				/*
+				 * Printing out tuple contents
+				 */
+				System.out.println("Number of positions found: " + positions.size());
+				for(int a : tuple){
+					System.out.println("Tuple: " + a);
+				}
+				
+				// if the non terminal length is 2 and it is at the end of the string
+				if (tuple[3] == 2 && (tuple[2]+tuple[3] >= tuple[4])){
+					endOfNonTerm = tuple[4]-1;
+				}
+				System.out.println("Start of non terminal: " + startOfNonTerm + " EndOfNonTerm: "+ endOfNonTerm);
+				String newString = cflInput.get(tuple[0]).get(tuple[1]).replace(startVar, "$");
+				// add new string with $
+				cflInput.get(tuple[0]).add(newString);
+				
+				
+				//cflInput.get(tuple[0]).set(tuple[1], newString); // = cflInput.get(tuple[0]).get(tuple[1]).replace(startVar, "$");
+				System.out.println("replaced " + startVar + " with "+ cflInput.get(tuple[0]).get(tuple[1]).toString());
+				
+				//Set<String> hs = new HashSet<>();
+				//hs.addAll(cflInput.get(tuple[0]));
+				//cflInput.get(tuple[0]).clear();
+				//cflInput.get(tuple[0]).addAll(hs);
+			}
+			cflInput.get(ePos[0]).remove(ePos[1]);
+		i--;	
+		}
+		
+		//tim's attempt woop!
+		/*int[] ePos = ePosition();
+		System.out.println("E found at position: " + ePos[0] +", " + ePos[1]);
+		if (ePos.length == 0){
+			return;
+		}
+		String startVar = cflInput.get(ePos[0]).get(0);
+		ArrayList<Integer[]> positions = getPositions(startVar);// get all positions in the CFG with that variable on the right hand side
+		
+		System.out.println("POSITIONS: " + positions);
+		for (Integer[] tuple : positions)
+		{
+			System.out.println("STUFF IS LOCATED: " + tuple[0] + ", " + tuple[1]);
+		}*/
+		
+	}
+	
+	public static ArrayList<Integer[]> getPositions(String nonTerminal){
+		ArrayList<Integer[]> positions = new ArrayList<Integer[]>();
+		char[] nonTermChars = new char[2];
+		if (nonTerminal.length() == 2){
+			nonTermChars[0] = nonTerminal.charAt(0);
+			nonTermChars[1] = nonTerminal.charAt(1);
+		}
+		else if (nonTerminal.length() == 1){
+			nonTermChars[0] = nonTerminal.charAt(0);
+			// when looking for matches, if this position 1 is '*',
+			// ignore and only compare position 0.
+			nonTermChars[1] = '*';
+		}
+		
+		
+		for (int i = 0; i < numLines; i++){
+			
+			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
+				
+				String contents = cflInput.get(i).get(j);
+				
+				for (int x = 0; x < contents.length(); x++){
+					char curLetter = contents.charAt(x);
+					
+					// if the current letter is equal to the first character
+					// in the non terminal, check to make sure it is actually
+					// equal (ie B != B0 and B1 != B0
+					if ((curLetter == nonTermChars[0])){
+						// if the non terminal only has one character, check the next 
+						// character in the string to make sure it is not a number
+						// if it's not, they're equal, else they're not
+						if ((nonTermChars[1] == '*')){
+							// if next char is not a number
+							if ((x+1) < contents.length()){
+								if (!((contents.charAt(x+1) > 47) && (contents.charAt(x+1) < 58))){
+									Integer[] foundPos = {i,j, x, 1, contents.length()};
+									positions.add(foundPos);
+								}
+							}
+							else {
+								Integer[] foundPos = {i,j, x, 1, contents.length()};
+								positions.add(foundPos);
+							}
+						}
+						// non terminal we are looking for is 2 characters (a letter followed by a number)
+						else {
+							if ((x+1) < contents.length()){
+								if (((contents.charAt(x+1) > 47) && (contents.charAt(x+1) < 58) && (contents.charAt(x+1) == nonTermChars[1]))){
+									
+									Integer[] foundPos = {i,j, x, 2, contents.length()};
+									positions.add(foundPos);
+								}
+							}
+							
+						}
+
+					}
+				}
+			}
+			
+		}
+		
+		return positions;
+		/*ArrayList<Integer[]> positions = new ArrayList<Integer[]>();
+		for (int i = 0; i < numLines; i++)
+		{
+			for (int j = 1; j < cflInput.get(i).size(); j++)
+			{
+				String contents = cflInput.get(i).get(j);
+				if(contents == nonTerminal)
+				{
+					Integer[] foundPos = {i,j};
+					positions.add(foundPos);
+				}
+			}
+		}
+		return positions;*/
+	}
+	
+	public static void moveEpsilon()
+	{
+		
+	}
+}
+		

@@ -1,0 +1,161 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+
+
+public class main extends JFrame{
+	
+	
+	
+	public static ArrayList<ArrayList<String>> cflInput = new ArrayList<ArrayList<String>>();
+	public static int numLines;
+	public static void main(String[] args) {
+		Scanner keyboard = new Scanner(System.in);
+		ArrayList<ArrayList<String>> cflInput = new ArrayList<ArrayList<String>>();
+		
+		System.out.println("How many lines?");
+		numLines = Integer.parseInt(keyboard.nextLine());
+		
+		for (int i = 0; i < numLines; i++){
+			System.out.println("Enter non terminal");
+			String nonTerminal = keyboard.nextLine();
+			ArrayList<String> row = new ArrayList<String>();
+			row.add(nonTerminal);
+			String nextRule = "";
+			while(!nextRule.equals("done"))
+			{
+				System.out.println("Enter next rule in row");
+				nextRule = keyboard.nextLine();
+				if(!nextRule.equals("done"))
+				{
+					row.add(nextRule);
+				}
+				
+			}
+			cflInput.add(row);
+		}
+		
+		System.out.println("The CFL you have entered is:");
+		for (int i = 0; i < numLines; i++){
+			for (int j = 0; j < cflInput.get(i).size(); j++){
+				if (j == 1){
+					System.out.print(" --> ");
+				}
+				if (j > 1){
+					System.out.print(" | ");
+				}
+				System.out.print(cflInput.get(i).get(j));
+				
+			}
+			System.out.print("\n");
+		}
+		System.out.println(cflInput.get(0).get(1));
+		//call new method
+		//newStart();
+		
+		while(!checkChomsky())
+		{
+			//check all the things
+			
+		}
+		
+		System.out.println("In chomsky form: " + checkChomsky());
+		//checkStart();
+	}
+	
+	
+	/*
+	 * So, we have to eliminate A -> $ rules before adding the new start rule
+	 * BECAUSE just copying over the first line to the top line won't be correct, see coursepack
+	 */
+	public static void checkStart()
+	{
+		
+			//numLines++; //this is to account for the newline added
+			
+			ArrayList<String> row2 = new ArrayList<String>();
+			for(int j=0; j < cflInput.get(1).size(); j++)
+			{
+				if(!(j == 0))
+				{
+					row2.add(cflInput.get(1).get(j));
+				}
+			}
+			
+			cflInput.add(0, row2);
+			
+	
+			System.out.println("New CFL: ");
+			//print out to check for correctness
+			for (int i = 0; i < numLines; i++){
+				for (int j = 0; j < cflInput.get(i).size(); j++){
+					if (j == 1){
+						System.out.print(" --> ");
+					}
+					if (j > 1){
+						System.out.print(" | ");
+					}
+					System.out.print(cflInput.get(i).get(j));
+					
+				}
+				System.out.print("\n");
+			}
+			
+	}
+	
+	//check if we did the chomsky-ing
+	private static boolean checkChomsky()
+	{
+		
+		for (int i = 0; i < numLines; i++){
+			System.out.println("Made it again");
+			for (int j = -1; j < cflInput.get(i).size(); j++){//j==1
+				int upperCount = 0;
+				int lowerCount = 0;
+				
+				String contents = cflInput.get(i).get(j);
+				
+				for (int x = 0; x < contents.length(); x++){
+					char curLetter = contents.charAt(x);
+					if (curLetter > 96 && curLetter < 123){
+						//lowercase
+						lowerCount++;
+					}
+					else if (curLetter > 64 && curLetter < 91){
+						upperCount++;
+					}
+					if ((curLetter == '$') && (i > 0)){
+						return false;
+					}
+					
+				}
+				if (!((upperCount == 2 && lowerCount == 0) || (lowerCount == 1 && upperCount == 0))){
+					return false;
+				}
+				
+				
+			}
+			
+		}
+		
+		
+		return true;
+	}
+	
+	private static void newStart()
+	{
+		numLines++;
+		
+		ArrayList<String> row2 = new ArrayList<String>();
+		String newRule = cflInput.get(0).get(0);
+		String newStart = newRule + '0';
+		
+		row2.add(newStart);
+		row2.add(newRule);
+		
+		cflInput.add(0, row2);
+		
+	}
+}
+		

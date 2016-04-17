@@ -1,0 +1,102 @@
+How many lines?
+3
+Enter non terminal
+S
+Enter next rule in row
+ASA
+Enter next rule in row
+aB
+Enter next rule in row
+$
+Enter next rule in row
+done
+Enter non terminal
+A
+Enter next rule in row
+S
+Enter next rule in row
+B
+Enter next rule in row
+done
+Enter non terminal
+B
+Enter next rule in row
+b
+Enter next rule in row
+done
+The CFL you have entered is:
+S --> ASA | aB | $
+A --> S | B
+B --> b
+A
+S0 --> S
+S --> ASA | aB | $
+A --> S | B
+B --> b
+E found at position: 1, 3
+Number of positions found: 3
+Tuple: 0
+Tuple: 1
+Tuple: 0
+Tuple: 1
+Tuple: 1
+Start of non terminal: 0 EndOfNonTerm: 1
+replaced S with S
+Number of positions found: 3
+Tuple: 1
+Tuple: 1
+Tuple: 1
+Tuple: 1
+Tuple: 3
+Start of non terminal: 1 EndOfNonTerm: 2
+replaced S with ASA
+Number of positions found: 3
+Tuple: 2
+Tuple: 1
+Tuple: 0
+Tuple: 1
+Tuple: 1
+Start of non terminal: 0 EndOfNonTerm: 1
+replaced S with S
+S0 --> S | $
+S --> ASA | aB | A$A
+A --> S | B | $
+B --> b
+E found at position: 2, 3
+Number of positions found: 4
+Tuple: 1
+Tuple: 1
+Tuple: 0
+Tuple: 1
+Tuple: 3
+Start of non terminal: 0 EndOfNonTerm: 1
+replaced A with ASA
+Number of positions found: 4
+Tuple: 1
+Tuple: 1
+Tuple: 2
+Tuple: 1
+Tuple: 3
+Start of non terminal: 2 EndOfNonTerm: 3
+replaced A with ASA
+Number of positions found: 4
+Tuple: 1
+Tuple: 3
+Tuple: 0
+Tuple: 1
+Tuple: 3
+Start of non terminal: 0 EndOfNonTerm: 1
+replaced A with A$A
+Number of positions found: 4
+Tuple: 1
+Tuple: 3
+Tuple: 2
+Tuple: 1
+Tuple: 3
+Start of non terminal: 2 EndOfNonTerm: 3
+replaced A with A$A
+S0 --> S | $
+S --> ASA | aB | A$A | $S$ | $S$ | $$$ | $$$
+A --> S | B
+B --> b
+In chomsky form: false
