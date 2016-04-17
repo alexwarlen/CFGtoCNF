@@ -15,7 +15,7 @@ public class main extends JFrame{
 	public static void main(String[] args) {
 		Scanner keyboard = new Scanner(System.in);
 		
-		System.out.println("How many lines?");
+		/*System.out.println("How many lines?");
 		numLines = Integer.parseInt(keyboard.nextLine());
 		
 		for (int i = 0; i < numLines; i++){
@@ -35,7 +35,23 @@ public class main extends JFrame{
 				
 			}
 			cflInput.add(row);
-		}
+		}*/
+        ArrayList<String> row1 = new ArrayList<String>();
+        row1.add("S");
+        row1.add("ASA");
+        row1.add("aB");
+        ArrayList<String> row2 = new ArrayList<String>();
+        row2.add("A");
+        row2.add("S");
+        row2.add("B");
+        ArrayList<String> row3 = new ArrayList<String>();
+        row3.add("B");
+        row3.add("b");
+        row3.add("$");
+        cflInput.add(row1);
+        cflInput.add(row2);
+        cflInput.add(row3);
+        numLines = 3;
 		
 		System.out.println("The CFL you have entered is:");
 		printCurrentCFL();
@@ -478,21 +494,38 @@ public class main extends JFrame{
                 for (int j = 1; j < cflInput.get(i).size(); j++) {
                     nonTerm= cflInput.get(i).get(j);
                     if (nonTerm.length() == 1) {
-                        char letter = (char) nonTerm.charAt(0);
+                        char letter = nonTerm.charAt(0);
                         // if the letter is single and uppercase
                         if (letter > 64 && letter < 91) {
                             for (int x = 0; x < numLines; x++) {
 
                                 if (cflInput.get(x).get(0).equals(letter + "")) {
+
                                     copyContents(i, x);
                                 }
                             }
                         }
                     }
-
-
                 }
             }
+        ArrayList<int[]> removeCoordinates = new ArrayList<int[]>();
+        for(int i = 0; i < numLines; i++){
+            for (int j = 1; j < cflInput.get(i).size(); j++){
+                if (cflInput.get(i).get(j).length() == 1){
+                    char letter = cflInput.get(i).get(j).charAt(0);
+                    if (letter > 64 && letter < 91){
+                        int[] coordinates = new int[2];
+                        coordinates[0] = i;
+                        coordinates[1] = j;
+                        removeCoordinates.add(coordinates);
+                    }
+                }
+            }
+        }
+
+        for(int i = removeCoordinates.size()-1; i >= 0; i--){
+            cflInput.get(removeCoordinates.get(i)[0]).remove(removeCoordinates.get(i)[1]);
+        }
        // }
     }
 
