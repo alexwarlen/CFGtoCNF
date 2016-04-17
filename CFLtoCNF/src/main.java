@@ -11,6 +11,7 @@ public class main extends JFrame{
 	
 	public static ArrayList<ArrayList<String>> cflInput = new ArrayList<ArrayList<String>>();
 	public static int numLines;
+    public static String[] extraNonTerminals = {"!", "@", "#", "%", "^", "&", "*", "-", "+", "=", "_", "/"};
 	
 	public static void main(String[] args) {
 		Scanner keyboard = new Scanner(System.in);
@@ -78,6 +79,10 @@ public class main extends JFrame{
         removeSingles();
 
 		printCurrentCFL();
+
+        System.out.println("After removing triples: ");
+        removeTriples();
+        printCurrentCFL();
 		System.out.println("In chomsky form: " + checkChomsky());
 		//checkStart();
 		
@@ -536,6 +541,37 @@ public class main extends JFrame{
         }
         System.out.println("After copying contents: ");
         printCurrentCFL();
+    }
+
+    public static void removeTriples(){
+        Set<String> stringEnds = new HashSet<String>();
+        for(int i = 0; i < numLines; i++) {
+            for (int j = 1; j < cflInput.get(i).size(); j++) {
+                if (cflInput.get(i).get(j).length() >2){
+                    String temp = cflInput.get(i).get(j).substring(1);
+                    stringEnds.add(temp);
+                }
+            }
+        }
+
+        ArrayList<String> strings = new ArrayList<String>();
+        strings.addAll(stringEnds);
+        for (int x = 0; x < strings.size(); x++){
+            for (int i = 0; i < numLines; i++){
+                for (int j = 1; j < cflInput.get(i).size(); j++){
+                    if (cflInput.get(i).get(j).length() > 2) {
+                        cflInput.get(i).set(j, cflInput.get(i).get(j).replace(strings.get(x), extraNonTerminals[x]));
+                    }
+                }
+            }
+            numLines++;
+            ArrayList<String> newLine = new ArrayList<String>();
+            newLine.add(extraNonTerminals[x]);
+            newLine.add(strings.get(x));
+            cflInput.add(newLine);
+        }
+
+
     }
 }
 		

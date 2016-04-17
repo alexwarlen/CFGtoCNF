@@ -27,18 +27,21 @@
       <file leaf-file-name="main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CFLtoCNF/src/main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="527" column="9" selection-start-line="527" selection-start-column="9" selection-end-line="527" selection-end-column="9" />
+            <state relative-caret-position="427">
+              <caret line="570" column="34" selection-start-line="570" selection-start-column="34" selection-end-line="570" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#228#247#0" expanded="true" />
-                <element signature="e#979#987#0" expanded="true" />
-                <element signature="e#1109#1117#0" expanded="true" />
-                <element signature="e#1236#1244#0" expanded="true" />
-                <element signature="e#2515#2523#0" expanded="true" />
-                <element signature="e#4346#4354#0" expanded="true" />
-                <element signature="e#8848#8859#0" expanded="true" />
-                <element signature="e#12700#12708#0" expanded="true" />
+                <element signature="e#1088#1096#0" expanded="true" />
+                <element signature="e#1218#1226#0" expanded="true" />
+                <element signature="e#1345#1353#0" expanded="true" />
+                <element signature="e#2733#2741#0" expanded="true" />
+                <element signature="e#4564#4572#0" expanded="true" />
+                <element signature="e#9066#9077#0" expanded="true" />
+                <element signature="e#12918#12926#0" expanded="true" />
+                <element signature="e#15808#15816#0" expanded="true" />
+                <element signature="e#16189#16197#0" expanded="true" />
+                <element signature="e#16713#16721#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -403,7 +406,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/CFLtoCNF/src/main.java</url>
-          <line>490</line>
+          <line>495</line>
           <properties />
           <option name="timeStamp" value="7" />
         </line-breakpoint>
@@ -419,18 +422,21 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/CFLtoCNF/src/main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="527" column="9" selection-start-line="527" selection-start-column="9" selection-end-line="527" selection-end-column="9" />
+        <state relative-caret-position="427">
+          <caret line="570" column="34" selection-start-line="570" selection-start-column="34" selection-end-line="570" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#228#247#0" expanded="true" />
-            <element signature="e#979#987#0" expanded="true" />
-            <element signature="e#1109#1117#0" expanded="true" />
-            <element signature="e#1236#1244#0" expanded="true" />
-            <element signature="e#2515#2523#0" expanded="true" />
-            <element signature="e#4346#4354#0" expanded="true" />
-            <element signature="e#8848#8859#0" expanded="true" />
-            <element signature="e#12700#12708#0" expanded="true" />
+            <element signature="e#1088#1096#0" expanded="true" />
+            <element signature="e#1218#1226#0" expanded="true" />
+            <element signature="e#1345#1353#0" expanded="true" />
+            <element signature="e#2733#2741#0" expanded="true" />
+            <element signature="e#4564#4572#0" expanded="true" />
+            <element signature="e#9066#9077#0" expanded="true" />
+            <element signature="e#12918#12926#0" expanded="true" />
+            <element signature="e#15808#15816#0" expanded="true" />
+            <element signature="e#16189#16197#0" expanded="true" />
+            <element signature="e#16713#16721#0" expanded="true" />
           </folding>
         </state>
       </provider>
