@@ -27,21 +27,25 @@
       <file leaf-file-name="main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CFLtoCNF/src/main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="427">
-              <caret line="570" column="34" selection-start-line="570" selection-start-column="34" selection-end-line="570" selection-end-column="34" />
+            <state relative-caret-position="315">
+              <caret line="44" column="19" selection-start-line="44" selection-start-column="19" selection-end-line="44" selection-end-column="19" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#228#247#0" expanded="true" />
-                <element signature="e#1088#1096#0" expanded="true" />
-                <element signature="e#1218#1226#0" expanded="true" />
-                <element signature="e#1345#1353#0" expanded="true" />
-                <element signature="e#2733#2741#0" expanded="true" />
-                <element signature="e#4564#4572#0" expanded="true" />
-                <element signature="e#9066#9077#0" expanded="true" />
-                <element signature="e#12918#12926#0" expanded="true" />
-                <element signature="e#15808#15816#0" expanded="true" />
-                <element signature="e#16189#16197#0" expanded="true" />
-                <element signature="e#16713#16721#0" expanded="true" />
+                <element signature="e#349#357#0" expanded="true" />
+                <element signature="e#1313#1321#0" expanded="true" />
+                <element signature="e#1443#1451#0" expanded="true" />
+                <element signature="e#1570#1578#0" expanded="true" />
+                <element signature="e#3087#3095#0" expanded="true" />
+                <element signature="e#4918#4926#0" expanded="true" />
+                <element signature="e#9420#9431#0" expanded="true" />
+                <element signature="e#13272#13280#0" expanded="true" />
+                <element signature="e#16199#16207#0" expanded="true" />
+                <element signature="e#16619#16627#0" expanded="true" />
+                <element signature="e#17194#17202#0" expanded="true" />
+                <element signature="e#17584#17592#0" expanded="true" />
+                <element signature="e#18686#18694#0" expanded="true" />
+                <element signature="e#19211#19219#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -372,7 +376,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -381,7 +385,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32942554" sideWeight="0.11736111" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32942554" sideWeight="0.8826389" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32942554" sideWeight="0.8826389" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -406,7 +410,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/CFLtoCNF/src/main.java</url>
-          <line>495</line>
+          <line>504</line>
           <properties />
           <option name="timeStamp" value="7" />
         </line-breakpoint>
@@ -422,21 +426,25 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/CFLtoCNF/src/main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="427">
-          <caret line="570" column="34" selection-start-line="570" selection-start-column="34" selection-end-line="570" selection-end-column="34" />
+        <state relative-caret-position="315">
+          <caret line="44" column="19" selection-start-line="44" selection-start-column="19" selection-end-line="44" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#228#247#0" expanded="true" />
-            <element signature="e#1088#1096#0" expanded="true" />
-            <element signature="e#1218#1226#0" expanded="true" />
-            <element signature="e#1345#1353#0" expanded="true" />
-            <element signature="e#2733#2741#0" expanded="true" />
-            <element signature="e#4564#4572#0" expanded="true" />
-            <element signature="e#9066#9077#0" expanded="true" />
-            <element signature="e#12918#12926#0" expanded="true" />
-            <element signature="e#15808#15816#0" expanded="true" />
-            <element signature="e#16189#16197#0" expanded="true" />
-            <element signature="e#16713#16721#0" expanded="true" />
+            <element signature="e#349#357#0" expanded="true" />
+            <element signature="e#1313#1321#0" expanded="true" />
+            <element signature="e#1443#1451#0" expanded="true" />
+            <element signature="e#1570#1578#0" expanded="true" />
+            <element signature="e#3087#3095#0" expanded="true" />
+            <element signature="e#4918#4926#0" expanded="true" />
+            <element signature="e#9420#9431#0" expanded="true" />
+            <element signature="e#13272#13280#0" expanded="true" />
+            <element signature="e#16199#16207#0" expanded="true" />
+            <element signature="e#16619#16627#0" expanded="true" />
+            <element signature="e#17194#17202#0" expanded="true" />
+            <element signature="e#17584#17592#0" expanded="true" />
+            <element signature="e#18686#18694#0" expanded="true" />
+            <element signature="e#19211#19219#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -11,10 +11,14 @@ public class main extends JFrame{
 	
 	public static ArrayList<ArrayList<String>> cflInput = new ArrayList<ArrayList<String>>();
 	public static int numLines;
-    public static String[] extraNonTerminals = {"!", "@", "#", "%", "^", "&", "*", "-", "+", "=", "_", "/"};
-	
+    public static ArrayList<String> extraNonTerminals = new ArrayList<String>();
+    public static String[] extras =     {"O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+    public static String[] mapExtras = {"", "","","","","","","","","","","","","","","",""};
+
+
 	public static void main(String[] args) {
-		Scanner keyboard = new Scanner(System.in);
+		extraNonTerminals.addAll(Arrays.asList(extras));
+        Scanner keyboard = new Scanner(System.in);
 		
 		/*System.out.println("How many lines?");
 		numLines = Integer.parseInt(keyboard.nextLine());
@@ -38,12 +42,12 @@ public class main extends JFrame{
 			cflInput.add(row);
 		}*/
         ArrayList<String> row1 = new ArrayList<String>();
-        row1.add("S");
-        row1.add("ASA");
+        row1.add("C");
+        row1.add("ACC");
         row1.add("aB");
         ArrayList<String> row2 = new ArrayList<String>();
         row2.add("A");
-        row2.add("S");
+        row2.add("C");
         row2.add("B");
         ArrayList<String> row3 = new ArrayList<String>();
         row3.add("B");
@@ -83,6 +87,11 @@ public class main extends JFrame{
         System.out.println("After removing triples: ");
         removeTriples();
         printCurrentCFL();
+
+        System.out.println("After removing not-alone little letters");
+        keepLoneTerminals();
+        printCurrentCFL();
+
 		System.out.println("In chomsky form: " + checkChomsky());
 		//checkStart();
 		
@@ -544,34 +553,103 @@ public class main extends JFrame{
     }
 
     public static void removeTriples(){
-        Set<String> stringEnds = new HashSet<String>();
-        for(int i = 0; i < numLines; i++) {
+        while(!checkTriples()) {
+            Set<String> stringEnds = new HashSet<String>();
+            for (int i = 0; i < numLines; i++) {
+                for (int j = 1; j < cflInput.get(i).size(); j++) {
+                    if (cflInput.get(i).get(j).length() > 2) {
+                        String temp = cflInput.get(i).get(j).substring(1);
+                        stringEnds.add(temp);
+                    }
+                }
+            }
+
+            ArrayList<String> strings = new ArrayList<String>();
+            strings.addAll(stringEnds);
+            for (int x = 0; x < strings.size(); x++) {
+                for (int i = 0; i < numLines; i++) {
+                    for (int j = 1; j < cflInput.get(i).size(); j++) {
+                        if (cflInput.get(i).get(j).length() > 2) {
+                            cflInput.get(i).set(j, cflInput.get(i).get(j).replace(strings.get(x), extraNonTerminals.get(x)));
+                        }
+                    }
+                }
+                numLines++;
+                ArrayList<String> newLine = new ArrayList<String>();
+                newLine.add(extraNonTerminals.get(x));
+                newLine.add(strings.get(x));
+                cflInput.add(newLine);
+            }
+            for (int i = strings.size()-1; i >= 0; i--){
+                extraNonTerminals.remove(i);
+            }
+        }
+
+
+    }
+
+    public static void keepLoneTerminals(){
+        Set<String> replaceChars = new HashSet<String>();
+
+        for (int i = 0; i < numLines; i++) {
             for (int j = 1; j < cflInput.get(i).size(); j++) {
-                if (cflInput.get(i).get(j).length() >2){
-                    String temp = cflInput.get(i).get(j).substring(1);
-                    stringEnds.add(temp);
+                if (cflInput.get(i).get(j).length() > 1){
+                    for (int x = 0; x < cflInput.get(i).get(j).length(); x++){
+                        char letter = cflInput.get(i).get(j).charAt(x);
+                        if (letter > 96 && letter < 123){
+                            int stringStart = x;
+                            int stringEnd = x+1;
+                            String replaceChar;
+                            if (stringEnd < cflInput.get(i).get(j).length()) {
+                                replaceChar = cflInput.get(i).get(j).substring(stringStart, stringEnd);
+                            }
+                            else {
+                                replaceChar = cflInput.get(i).get(j).substring(stringStart);
+                            }
+                            replaceChars.add(replaceChar);
+                        }
+                    }
                 }
             }
         }
 
-        ArrayList<String> strings = new ArrayList<String>();
-        strings.addAll(stringEnds);
-        for (int x = 0; x < strings.size(); x++){
+        ArrayList<String> chars = new ArrayList<String>();
+        chars.addAll(replaceChars);
+
+        for (int x = 0; x < chars.size(); x++){
             for (int i = 0; i < numLines; i++){
                 for (int j = 1; j < cflInput.get(i).size(); j++){
-                    if (cflInput.get(i).get(j).length() > 2) {
-                        cflInput.get(i).set(j, cflInput.get(i).get(j).replace(strings.get(x), extraNonTerminals[x]));
+                    if (cflInput.get(i).get(j).length() > 1) {
+                        cflInput.get(i).set(j, cflInput.get(i).get(j).replace(chars.get(x), extraNonTerminals.get(x)));
                     }
                 }
             }
             numLines++;
             ArrayList<String> newLine = new ArrayList<String>();
-            newLine.add(extraNonTerminals[x]);
-            newLine.add(strings.get(x));
+            newLine.add(extraNonTerminals.get(x));
+            newLine.add(chars.get(x));
             cflInput.add(newLine);
         }
 
+    }
 
+    public static boolean checkTriples(){
+        for (int i = 0; i < numLines; i++) {
+            for (int j = 1; j < cflInput.get(i).size(); j++) {
+                if (cflInput.get(i).get(j).length() > 2){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void setMappedExtras(){
+        for (int i = 0; i < numLines; i++){
+            for (int j = 1; j < cflInput.get(i).size(); j++){
+
+            }
+        }
     }
 }
 		
