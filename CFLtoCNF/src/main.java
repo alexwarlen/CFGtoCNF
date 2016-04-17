@@ -207,10 +207,10 @@ public class main extends JFrame{
 		return true;
 	}
 	
-	public static int[] ePosition(){
+	public static int[] ePosition(int startLine){
 		int[] tuple = new int[2];
 		
-		for (int i = numLines -1; i >= 0; i--){
+		for (int i = startLine; i >= 0; i--){
 			
 			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
 				String contents = cflInput.get(i).get(j);
@@ -235,8 +235,9 @@ public class main extends JFrame{
 	
 	public static void moveE()
 	{
+        int startLine = numLines-1;
 		while (!properEFormat()) {
-			int[] ePos = ePosition();
+			int[] ePos = ePosition(startLine);
 			printCurrentCFL();
 			System.out.println("E found at position: " + ePos[0] +", " + ePos[1]);
 			if (ePos.length == 0){
@@ -245,7 +246,7 @@ public class main extends JFrame{
 			// get the start variable of the line with the epsilon
 			String startVar = cflInput.get(ePos[0]).get(0);
 			// get all positions in the CFG with that variable on the right hand side
-			ArrayList<Integer[]> positions = getPositions(startVar);
+			ArrayList<Integer[]> positions = getPositions(startVar, startLine);
 			
 			for (Integer[] tuple : positions){
 				// Inspect how to get the end of the string, getting an out of bounds exception because it's going too far... :( 
@@ -279,7 +280,19 @@ public class main extends JFrame{
 				//cflInput.get(tuple[0]).clear();
 				//cflInput.get(tuple[0]).addAll(hs);
 			}
-			cflInput.get(ePos[0]).remove(ePos[1]);
+			System.out.println("Removing: " + ePos[0] + ", " +ePos[1]);
+            cflInput.get(ePos[0]).remove(ePos[1]);
+
+            System.out.println("CFL with removed: ");
+            printCurrentCFL();
+            removeDuplicates();
+            System.out.println("CFL with removed duplicates: ");
+            printCurrentCFL();
+            System.out.println("CFL with removed extra epsilons: ");
+            removeEpsilons();
+            printCurrentCFL();
+            // set search start for next time at the line above where the last one was removed
+            startLine = ePos[0] - 1;
 			
 		}
 		
@@ -300,7 +313,7 @@ public class main extends JFrame{
 		
 	}
 	
-	public static ArrayList<Integer[]> getPositions(String nonTerminal){
+	public static ArrayList<Integer[]> getPositions(String nonTerminal, int lastLine){
 		ArrayList<Integer[]> positions = new ArrayList<Integer[]>();
 		char[] nonTermChars = new char[2];
 		if (nonTerminal.length() == 2){
@@ -315,7 +328,7 @@ public class main extends JFrame{
 		}
 		
 		
-		for (int i = 0; i < numLines; i++){
+		for (int i = 0; i < lastLine; i++){
 			
 			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
 				
@@ -379,9 +392,45 @@ public class main extends JFrame{
 		return positions;*/
 	}
 	
-	public static void moveEpsilon()
+	public static void removeDuplicates()
 	{
-		
+
+
+        for (int i = 0; i < numLines; i++) {
+
+            int epsilonCount = 0;
+            //ArrayList<Integer> epsilonPositions = new ArrayList<Integer>();
+
+            for (int j = 1; j < cflInput.get(i).size(); j++) {
+                if (cflInput.get(i).get(j).equals("$")){
+                    epsilonCount++;
+                    //epsilonPositions.add(j);
+                }
+            }
+
+            if (epsilonCount > 1){
+                while(epsilonCount > 1) {
+                    for (int a = 1; a < cflInput.get(i).size(); a++) {
+                        if (cflInput.get(i).get(a).equals("$") && epsilonCount > 1) {
+                            cflInput.get(i).remove(a);
+                            epsilonCount--;
+                        }
+                    }
+                }
+            }
+        }
 	}
+    // removes epsilons that are part of a string
+    public static void removeEpsilons(){
+        for (int i = 0; i < numLines; i++){
+            for (int j = 1; j < cflInput.get(i).size(); j++){
+                if(cflInput.get(i).get(j).length() > 1){
+                    System.out.println("Old line: " + cflInput.get(i).get(j).toString());
+                    cflInput.get(i).set(j, cflInput.get(i).get(j).replace("$", " "));
+                    System.out.println("New line: "+ cflInput.get(i).get(j).toString());
+                }
+            }
+        }
+    }
 }
 		
