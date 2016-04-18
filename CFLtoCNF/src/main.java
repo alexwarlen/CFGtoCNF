@@ -20,7 +20,7 @@ public class main extends JFrame{
 		extraNonTerminals.addAll(Arrays.asList(extras));
         Scanner keyboard = new Scanner(System.in);
 		
-		/*System.out.println("How many lines?");
+		System.out.println("How many lines?");
 		numLines = Integer.parseInt(keyboard.nextLine());
 		
 		for (int i = 0; i < numLines; i++){
@@ -40,7 +40,7 @@ public class main extends JFrame{
 				
 			}
 			cflInput.add(row);
-		}*/
+		}
         /*ArrayList<String> row1 = new ArrayList<String>();
         row1.add("C");
         row1.add("ACC");
@@ -56,7 +56,7 @@ public class main extends JFrame{
         cflInput.add(row1);
         cflInput.add(row2);
         cflInput.add(row3);
-        numLines = 3;*/
+        numLines = 3;
         ArrayList<String> row1 = new ArrayList<String>();
         row1.add("H");
         row1.add("aA");
@@ -73,7 +73,8 @@ public class main extends JFrame{
         cflInput.add(row1);
         cflInput.add(row2);
         cflInput.add(row3);
-        numLines = 3;
+        numLines = 3;*/
+
         System.out.println("The CFL you have entered is:");
         printCurrentCFL();
 
@@ -119,6 +120,9 @@ public class main extends JFrame{
         keepLoneTerminals();
         printCurrentCFL();
 
+        removeDuplicateEntries();
+
+        printCurrentCFL();
 		System.out.println("In chomsky form: " + checkChomsky());
 		//checkStart();
 		
@@ -173,6 +177,7 @@ public class main extends JFrame{
 			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
 				int upperCount = 0;
 				int lowerCount = 0;
+                int epsilonCount = 0;
 				
 				String contents = cflInput.get(i).get(j);
 				
@@ -185,12 +190,15 @@ public class main extends JFrame{
 					else if (curLetter > 64 && curLetter < 91){
 						upperCount++;
 					}
+                    else if (curLetter == '$'){
+                        epsilonCount++;
+                    }
 					if ((curLetter == '$') && (i > 0)){
 						return false;
 					}
 					
 				}
-				if (!((upperCount == 2 && lowerCount == 0) || (lowerCount == 1 && upperCount == 0))){
+				if (!((upperCount == 2 && lowerCount == 0) || (lowerCount == 1 && upperCount == 0) || (epsilonCount == 1 && upperCount == 0 && lowerCount == 0 && i == 0))){
 					return false;
 				}
 				
@@ -675,12 +683,18 @@ public class main extends JFrame{
         return true;
     }
 
-    public static void setMappedExtras(){
+    public static void removeDuplicateEntries(){
         for (int i = 0; i < numLines; i++){
+            String tempStartVar = cflInput.get(i).get(0);
+            Set<String> tempLine = new HashSet<String>();
             for (int j = 1; j < cflInput.get(i).size(); j++){
-
+                tempLine.add(cflInput.get(i).get(j));
             }
+            cflInput.get(i).clear();
+            cflInput.get(i).add(tempStartVar);
+            cflInput.get(i).addAll(tempLine);
         }
     }
+
 }
 		
