@@ -1,35 +1,52 @@
-import java.awt.*;
-import java.awt.event.*;
-import java.lang.reflect.Array;
+
 import java.util.*;
 import javax.swing.*;
-
-
+/*
+* This program takes in a Context Free Grammar line
+* by line from the user through the command line. The program
+* then tells the user the new version of that grammar in
+* Chomsky Normal Form.
+*
+* Authors: Alexandra Warlen and Timothy MacNary
+* Last Modified: April 17, 2016
+*
+ */
 public class main extends JFrame{
-	
-	
-	
-	public static ArrayList<ArrayList<String>> cflInput = new ArrayList<ArrayList<String>>();
-	public static int numLines;
+	// main data structure for the CFG, holds the 2D arraylist with the elements of the grammar
+    public static ArrayList<ArrayList<String>> cflInput = new ArrayList<ArrayList<String>>();
+	// number of lines in the CFG
+    public static int numLines;
+
+    // lists to hold the characters that will be used to add new non-terminals when
+    // the algorithm calls for new rules
     public static ArrayList<String> extraNonTerminals = new ArrayList<String>();
     public static String[] extras =     {"P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-    public static String[] mapExtras = {"", "","","","","","","","","","","","","","","",""};
-
-
+    /*
+    * main()
+    *
+    * This main program takes in the command line inputs and creates a CFG
+    * from this information. The main program then ties together all portions
+    * of the code to complete each step in the algorithm to convert a CFG
+    * into Chomsky Normal Form.
+    *
+    */
 	public static void main(String[] args) {
 		extraNonTerminals.addAll(Arrays.asList(extras));
         Scanner keyboard = new Scanner(System.in);
-		
+
+        // get info from user about the CFG
 		System.out.println("How many lines?");
 		numLines = Integer.parseInt(keyboard.nextLine());
 		
 		for (int i = 0; i < numLines; i++){
-			System.out.println("Enter non terminal");
+			// Ask for first rule (non terminal) in line
+            System.out.println("Enter non terminal");
 			String nonTerminal = keyboard.nextLine();
 			ArrayList<String> row = new ArrayList<String>();
 			row.add(nonTerminal);
 			String nextRule = "";
-			while(!nextRule.equals("done"))
+			// wait until user enters 'done'
+            while(!nextRule.equals("done"))
 			{
 				System.out.println("Enter next rule in row");
 				nextRule = keyboard.nextLine();
@@ -41,43 +58,13 @@ public class main extends JFrame{
 			}
 			cflInput.add(row);
 		}
-        /*ArrayList<String> row1 = new ArrayList<String>();
-        row1.add("C");
-        row1.add("ACC");
-        row1.add("aB");
-        ArrayList<String> row2 = new ArrayList<String>();
-        row2.add("A");
-        row2.add("C");
-        row2.add("B");
-        ArrayList<String> row3 = new ArrayList<String>();
-        row3.add("B");
-        row3.add("b");
-        row3.add("$");
-        cflInput.add(row1);
-        cflInput.add(row2);
-        cflInput.add(row3);
-        numLines = 3;
-        ArrayList<String> row1 = new ArrayList<String>();
-        row1.add("H");
-        row1.add("aA");
 
-        ArrayList<String> row2 = new ArrayList<String>();
-        row2.add("A");
-        row2.add("aB");
-        row2.add("bB");
-        row2.add("$");
-        ArrayList<String> row3 = new ArrayList<String>();
-        row3.add("B");
-        row3.add("A");
-        row3.add("c");
-        cflInput.add(row1);
-        cflInput.add(row2);
-        cflInput.add(row3);
-        numLines = 3;*/
-
+        // print inital CFL in proper format
         System.out.println("The CFL you have entered is:");
         printCurrentCFL();
+        System.out.println("\n");
 
+        // if already in CNF format, tell user this
         if(checkChomsky()){
             System.out.println("Your CFL is already in CNF:");
             printCurrentCFL();
@@ -85,124 +72,89 @@ public class main extends JFrame{
         }
 
 
-		//call new method
+		// STEP 1: Create new Start Rule
 		newStart();
-		System.out.println(cflInput.get(2).get(0));
-		//printCurrentCFL();
-		/*while(!checkChomsky())
-		{
-			//check all the things
-			
-		}
-		System.out.println("All existences of B0: ");
-		ArrayList<Integer[]> test = getPositions("B0");
-		for (Integer[] pos : test){
-			System.out.println(pos[0] + ", " + pos[1]);
-		}*/
+
 		// STEP 2: Remove epsilons not in 1st line
 		moveE();
 
-        // STEP 3: Remove single non-terminal -> single non-terminal
+        // STEP 3: Remove single non-terminal to itself
         removeRedundant();
-        System.out.println("After remove redundant:");
-        printCurrentCFL();
-
-        System.out.println("After removing singles");
+        // Remove single non-terminals
         removeSingles();
 
-		printCurrentCFL();
-
-        System.out.println("After removing triples: ");
+        // STEP 4: Remove any rules with more than 2 characters
         removeTriples();
-        printCurrentCFL();
 
-        System.out.println("After removing not-alone little letters");
+        // remove any terminals that are not by themselves (ie aB removed, c stays)
         keepLoneTerminals();
-        printCurrentCFL();
 
+        // remove any entries that are for some reason copied twice into a row
         removeDuplicateEntries();
 
+        // print out new CFG in proper format
+        System.out.println("Here is your CFG in proper CNF:");
         printCurrentCFL();
-		System.out.println("In chomsky form: " + checkChomsky());
-		//checkStart();
-		
+
+        // print out if it is now in proper CNF
+		System.out.println("\nIn chomsky form: " + checkChomsky());
+
 	}
 	
 	
-	/*
-	 * So, we have to eliminate A -> $ rules before adding the new start rule
-	 * BECAUSE just copying over the first line to the top line won't be correct, see coursepack
+
+    /*
+	 * checkChomsky()
+	 *
+	 * Check to see if the CFG is now in proper CNF format
+	 *
+	 * It is as long as every rule either goes to:
+	 *      1. A single terminal
+	 *      2. 2 non-terminals
+	 *      3. Epsilon, but only if it is in the first line of the CFG
+	 *
 	 */
-	public static void checkStart()
-	{
-		
-			//numLines++; //this is to account for the newline added
-			
-			ArrayList<String> row2 = new ArrayList<String>();
-			for(int j=0; j < cflInput.get(1).size(); j++)
-			{
-				if(!(j == 0))
-				{
-					row2.add(cflInput.get(1).get(j));
-				}
-			}
-			
-			cflInput.add(0, row2);
-			
-	
-			System.out.println("New CFL: ");
-			//print out to check for correctness
-			for (int i = 0; i < numLines; i++){
-				for (int j = 0; j < cflInput.get(i).size(); j++){
-					if (j == 1){
-						System.out.print(" --> ");
-					}
-					if (j > 1){
-						System.out.print(" | ");
-					}
-					System.out.print(cflInput.get(i).get(j));
-					
-				}
-				System.out.print("\n");
-			}
-			
-	}
-	
-	//check if we did the chomsky-ing
 	private static boolean checkChomsky()
 	{
-		
+		//loop through both dimensions of the CFG
 		for (int i = 0; i < numLines; i++){
-			//System.out.println("Made it again: " + cflInput.get(0).size());
 			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
-				int upperCount = 0;
+				// count how many uppercase letters, lowercase letters and
+                // occurrences of $ (epsilon) exist.
+                int upperCount = 0;
 				int lowerCount = 0;
                 int epsilonCount = 0;
 				
 				String contents = cflInput.get(i).get(j);
-				
+
+                // look through each letter in each set of terminals and non terminals
 				for (int x = 0; x < contents.length(); x++){
-					char curLetter = contents.charAt(x);
+
+                    char curLetter = contents.charAt(x);
 					if (curLetter > 96 && curLetter < 123){
 						//lowercase
 						lowerCount++;
 					}
 					else if (curLetter > 64 && curLetter < 91){
-						upperCount++;
+						// uppercase
+                        upperCount++;
 					}
                     else if (curLetter == '$'){
+                        // epsilon ('$')
                         epsilonCount++;
                     }
+                    // if you find a $ and it's not on the first line
+                    // it's not in chomsky form
 					if ((curLetter == '$') && (i > 0)){
 						return false;
 					}
 					
 				}
-				if (!((upperCount == 2 && lowerCount == 0) || (lowerCount == 1 && upperCount == 0) || (epsilonCount == 1 && upperCount == 0 && lowerCount == 0 && i == 0))){
-					return false;
-				}
-				
-				
+                // if it's not a double non terminal, a single terminal or a lone epsilon in the first line
+                // then it's not in CNF, return false.
+				if (!((upperCount == 2 && lowerCount == 0) || (lowerCount == 1 && upperCount == 0) || (epsilonCount == 1 && upperCount == 0 && lowerCount == 0 && i == 0))) {
+                    return false;
+                }
 			}
 			
 		}
@@ -210,11 +162,21 @@ public class main extends JFrame{
 		
 		return true;
 	}
-	
+
+    /*
+     * printCurrentCFL()
+     *
+     * Takes the current CFL that is being stored in cflInput
+     * and prints it out in readable format with the -> and |
+     * symbols placed properly
+     *
+     */
 	public static void printCurrentCFL(){
-		for (int i = 0; i < numLines; i++){
+		// loop through both dimensions of the CFG
+        for (int i = 0; i < numLines; i++){
 			for (int j = 0; j < cflInput.get(i).size(); j++){
-				if (j == 1){
+
+                if (j == 1){
 					System.out.print(" --> ");
 				}
 				if (j > 1){
@@ -226,44 +188,43 @@ public class main extends JFrame{
 			System.out.print("\n");
 		}
 	}
-	
+
+    /*
+	 * newStart()
+	 *
+	 * Creates a new start variable for the CFG.
+	 * Meaning that it also adds a line to the CFG.
+	 *
+	 */
 	private static void newStart()
 	{
-		numLines++;
-		
+        // make one size longer
+        numLines++;
+
+        // create the new row
 		ArrayList<String> row2 = new ArrayList<String>();
 		String newRule = cflInput.get(0).get(0);
 		String newStart = newRule + '0';
-		
+
+        // add contents to row
 		row2.add(newStart);
 		row2.add(newRule);
-		
+
+        // ad row to the CFG
 		cflInput.add(0, row2);
 		
 	}
-	
+
+    /*
+     * properEFormat()
+     *
+     * Returns a true or false boolean that decides if the
+     * epsilons are in the correct place or not.
+     *
+     */
 	public static boolean properEFormat()
 	{
-		/*for (int i = 0; i < numLines; i++){
-			//System.out.println("Made it again: " + cflInput.get(0).size());
-			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
-				
-				
-				String contents = cflInput.get(i).get(j);
-				
-				for (int x = 0; x < contents.length(); x++){
-					char curLetter = contents.charAt(x);
-					
-					if ((curLetter == '$') && (i > 0)){
-						return false;
-					}
-					
-				}
-				
-			}
-			
-		}*/
-		
+		// loop through and make sure epsilons are in right postion
 		for (int i = 0; i < numLines; i++)
 		{
 			for (int j = 1; j < cflInput.get(i).size(); j++)
@@ -278,41 +239,55 @@ public class main extends JFrame{
 		
 		return true;
 	}
-	
+
+    /*
+	 * ePosition()
+	 *
+	 * Finds and returns coordinates of next epsilon in
+	 * CFG closest to bottom of CFG.
+	 *
+	 */
 	public static int[] ePosition(int startLine){
 		startLine = numLines - 1;
         int[] tuple = new int[2];
-		
-		for (int i = startLine; i >= 0; i--){
-			
-			for (int j = 1; j < cflInput.get(i).size(); j++){//j==1
-				String contents = cflInput.get(i).get(j);
-				
-				for (int x = 0; x < contents.length(); x++){
-					char curLetter = contents.charAt(x);
-					
-					if ((curLetter == '$')){
-						tuple[0] = i;
-						tuple[1] = j;
-						return tuple;
-					}
-					
-				}
-				
-			}
-			
-		}
-		
+
+        // loop through whole CFG
+		for (int i = startLine; i >= 0; i--) {
+            for (int j = 1; j < cflInput.get(i).size(); j++) {//j==1
+                // get current string
+                String contents = cflInput.get(i).get(j);
+
+                // look at each letter
+                for (int x = 0; x < contents.length(); x++) {
+                    char curLetter = contents.charAt(x);
+
+                    if ((curLetter == '$')) {
+                        tuple[0] = i;
+                        tuple[1] = j;
+                        return tuple;
+                    }
+
+                }
+
+            }
+
+        }
 		return tuple;
 	}
-	
+    /*
+     * moveE()
+     *
+     * While its not in the correct epsilon format,
+     * find the epsilons and keep moving them to the right
+     * place.
+     *
+     */
 	public static void moveE()
 	{
         int startLine = numLines-1;
 		while (!properEFormat()) {
 			int[] ePos = ePosition(startLine);
-			printCurrentCFL();
-			System.out.println("E found at position: " + ePos[0] +", " + ePos[1]);
+
 			if (ePos.length == 0){
 				return;
 			}
@@ -326,69 +301,43 @@ public class main extends JFrame{
 				int startOfNonTerm = tuple[2];
 				int endOfNonTerm = tuple[2] + tuple[3];
 				
-				/*
-				 * Printing out tuple contents
-				 */
-				System.out.println("Number of positions found: " + positions.size());
-				for(int a : tuple){
-					System.out.println("Tuple: " + a);
-				}
-                //if (endOfNonTerm >= cflInput.get(tuple[0]).get(tuple[1]).length()){
-
-                //}
-				
 				// if the non terminal length is 2 and it is at the end of the string
 				if (tuple[3] == 2 && (tuple[2]+tuple[3] >= tuple[4])){
 					endOfNonTerm = tuple[4]-1;
 				}
-				System.out.println("Start of non terminal: " + startOfNonTerm + " EndOfNonTerm: "+ endOfNonTerm);
+
 				String newString = cflInput.get(tuple[0]).get(tuple[1]).replace(startVar, "$");
-				System.out.println("newString is this: " + newString);
+
 				// add new string with $
 				cflInput.get(tuple[0]).add(newString);
 				
-				
-				//cflInput.get(tuple[0]).set(tuple[1], newString); // = cflInput.get(tuple[0]).get(tuple[1]).replace(startVar, "$");
-				System.out.println("replaced " + startVar + " with "+ cflInput.get(tuple[0]).get(tuple[1]).toString());
-				
-				//Set<String> hs = new HashSet<>();
-				//hs.addAll(cflInput.get(tuple[0]));
-				//cflInput.get(tuple[0]).clear();
-				//cflInput.get(tuple[0]).addAll(hs);
+
 			}
-			System.out.println("Removing: " + ePos[0] + ", " +ePos[1]);
+
             cflInput.get(ePos[0]).remove(ePos[1]);
 
-            System.out.println("CFL with removed: ");
-            printCurrentCFL();
+
             removeDuplicates();
-            System.out.println("CFL with removed duplicates: ");
-            printCurrentCFL();
-            System.out.println("CFL with removed extra epsilons: ");
+
+
             removeEpsilons();
-            printCurrentCFL();
             // set search start for next time at the line above where the last one was removed
             startLine = ePos[0] - 1;
 			
 		}
 		
-		//tim's attempt woop!
-		/*int[] ePos = ePosition();
-		System.out.println("E found at position: " + ePos[0] +", " + ePos[1]);
-		if (ePos.length == 0){
-			return;
-		}
-		String startVar = cflInput.get(ePos[0]).get(0);
-		ArrayList<Integer[]> positions = getPositions(startVar);// get all positions in the CFG with that variable on the right hand side
-		
-		System.out.println("POSITIONS: " + positions);
-		for (Integer[] tuple : positions)
-		{
-			System.out.println("STUFF IS LOCATED: " + tuple[0] + ", " + tuple[1]);
-		}*/
-		
 	}
-	
+
+    /*
+	 * getPositions()
+	 *
+	 * Takes a non terminal and a line from which to search the CFG.
+	 *
+	 * Finds all existences of the given nonTerminal in the CFG. Returns this list
+	 * as an arraylist of coordinates (array of size 2, x and y axes).
+	 *
+	 *
+	 */
 	public static ArrayList<Integer[]> getPositions(String nonTerminal, int lastLine){
 		lastLine = numLines-1;
         ArrayList<Integer[]> positions = new ArrayList<Integer[]>();
@@ -453,38 +402,30 @@ public class main extends JFrame{
 		}
 		
 		return positions;
-		/*ArrayList<Integer[]> positions = new ArrayList<Integer[]>();
-		for (int i = 0; i < numLines; i++)
-		{
-			for (int j = 1; j < cflInput.get(i).size(); j++)
-			{
-				String contents = cflInput.get(i).get(j);
-				if(contents == nonTerminal)
-				{
-					Integer[] foundPos = {i,j};
-					positions.add(foundPos);
-				}
-			}
-		}
-		return positions;*/
+
 	}
-	
+
+    /*
+	 * removeDuplicates()
+	 *
+	 * Removes duplicates of epsilon on the same line.
+	 *
+	 */
 	public static void removeDuplicates()
 	{
-
-
+        // iterate through entire CFG
         for (int i = 0; i < numLines; i++) {
 
+            // count the epsilons
             int epsilonCount = 0;
-            //ArrayList<Integer> epsilonPositions = new ArrayList<Integer>();
 
             for (int j = 1; j < cflInput.get(i).size(); j++) {
                 if (cflInput.get(i).get(j).equals("$")){
                     epsilonCount++;
-                    //epsilonPositions.add(j);
                 }
             }
 
+            // if more than one, remove the rest
             if (epsilonCount > 1){
                 while(epsilonCount > 1) {
                     for (int a = 1; a < cflInput.get(i).size(); a++) {
@@ -497,36 +438,53 @@ public class main extends JFrame{
             }
         }
 	}
-    // removes epsilons that are part of a string
+
+    /*
+	 * removeEpsilons()
+	 *
+	 * Removes epsilons that are in the middle of a string
+	 * after replacements have taken place. (i.e. $A$ -> A)
+	 *
+	 */
     public static void removeEpsilons(){
         for (int i = 0; i < numLines; i++){
             for (int j = 1; j < cflInput.get(i).size(); j++){
                 if(cflInput.get(i).get(j).length() > 1){
-                    System.out.println("Old line: " + cflInput.get(i).get(j).toString());
                     cflInput.get(i).set(j, cflInput.get(i).get(j).replace("$", ""));
-                    System.out.println("New line: "+ cflInput.get(i).get(j).toString());
                 }
             }
         }
     }
 
+    /*
+	 * removeRedundant()
+	 *
+	 * If a rule goes to itself, remove that part of the
+	 * rule that goes back to itself.
+	 *
+	 */
     public static void removeRedundant(){
 
+        // iterate through all lines
         for (int i = 0; i < numLines; i++) {
 
+            // create a list of nonterminals
             ArrayList<String> temp = new ArrayList<String>();
             int duplicates = 0;
             String nonTerminal = cflInput.get(i).get(0).toString();
+            // for each right hand side
             for (int j = 1; j < cflInput.get(i).size(); j++) {
+                // if the entry in the CFG is equal to it's own
+                // left hand side, count it
                 if (cflInput.get(i).get(j).toString().equals(nonTerminal)){
                     duplicates++;
                 }
                 temp.add(cflInput.get(i).get(j));
             }
-            System.out.println("REMOVE DUPLICATES: " + i);
 
+            // for each duplicate
             for (int x = 0; x < duplicates; x++){
-
+                // remove it
                 temp.remove(nonTerminal);
             }
             cflInput.get(i).clear();
@@ -538,32 +496,42 @@ public class main extends JFrame{
         }
     }
 
+    /*
+	 * removeSingles()
+	 *
+	 * Remove all single uppercase letters, replace with respective
+	 * lowercase letters.
+	 *
+	 */
     public static void removeSingles(){
 
-        //for (int z = numLines -1; z >=0; z--) {
-            //String nonTerm = cflInput.get(z).get(0).toString();
-            for (int i = numLines - 1; i >= 0; i--) {
-                String nonTerm;
+        // iterate through CFG
+        for (int i = numLines - 1; i >= 0; i--) {
+            String nonTerm;
 
-                for (int j = 1; j < cflInput.get(i).size(); j++) {
-                    nonTerm= cflInput.get(i).get(j);
-                    if (nonTerm.length() == 1) {
-                        char letter = nonTerm.charAt(0);
-                        // if the letter is single and uppercase
-                        if (letter > 64 && letter < 91) {
-                            for (int x = 0; x < numLines; x++) {
-
-                                if (cflInput.get(x).get(0).equals(letter + "")) {
-                                    copyContents(i, x);
-                                }
+            for (int j = 1; j < cflInput.get(i).size(); j++) {
+                nonTerm = cflInput.get(i).get(j);
+                if (nonTerm.length() == 1) {
+                    char letter = nonTerm.charAt(0);
+                    // if the letter is single and uppercase
+                    if (letter > 64 && letter < 91) {
+                        // copy all contents from that line
+                        for (int x = 0; x < numLines; x++) {
+                            // ony copy if the nonterminal is equal to the one we want
+                            if (cflInput.get(x).get(0).equals(letter + "")) {
+                                copyContents(i, x);
                             }
                         }
                     }
                 }
             }
+
+        }
+        // find all coordinates that have been replaced so we can now remove those rules
         ArrayList<int[]> removeCoordinates = new ArrayList<int[]>();
         for(int i = 0; i < numLines; i++){
             for (int j = 1; j < cflInput.get(i).size(); j++){
+                // if the letter is single and uppercase, remove
                 if (cflInput.get(i).get(j).length() == 1){
                     char letter = cflInput.get(i).get(j).charAt(0);
                     if (letter > 64 && letter < 91){
@@ -576,49 +544,75 @@ public class main extends JFrame{
             }
         }
 
+        // now loop through and actually remove them
         for(int i = removeCoordinates.size()-1; i >= 0; i--){
             cflInput.get(removeCoordinates.get(i)[0]).remove(removeCoordinates.get(i)[1]);
         }
-       // }
+
     }
 
+    /*
+	 * copyContents()
+	 *
+	 * Takes two ints that are line numbers.
+	 *
+	 * Copies contents from one line and adds them to the end
+	 * of the other line.
+	 *
+	 */
     public static void copyContents(int copyTo, int copyFrom){
         for (int j = 1; j < cflInput.get(copyFrom).size(); j++){
             String copying = cflInput.get(copyFrom).get(j);
             cflInput.get(copyTo).add(copying);
         }
-        System.out.println("After copying contents: ");
-        printCurrentCFL();
     }
 
+    /*
+	 * removeTriples()
+	 *
+	 * Finds and removes any rules that are longer than 2
+	 * characters in length. Replaces the end of the rule
+	 * with a single character from list of usable extras.
+	 *
+	 */
     public static void removeTriples(){
+        // while rules longer than 2 still remain
         while(!checkTriples()) {
+            // create a hash set ( so no duplicates are allowed)
             Set<String> stringEnds = new HashSet<String>();
+            // loop through
             for (int i = 0; i < numLines; i++) {
                 for (int j = 1; j < cflInput.get(i).size(); j++) {
+                    // if the length is greater than 2
                     if (cflInput.get(i).get(j).length() > 2) {
+                        // make a temp string and get the end of the initial string
                         String temp = cflInput.get(i).get(j).substring(1);
                         stringEnds.add(temp);
                     }
                 }
             }
 
+            // create second temp list of these strings
             ArrayList<String> strings = new ArrayList<String>();
+            // copy over all contents from hash set so we can iterate now
             strings.addAll(stringEnds);
             for (int x = 0; x < strings.size(); x++) {
                 for (int i = 0; i < numLines; i++) {
                     for (int j = 1; j < cflInput.get(i).size(); j++) {
+                        // replace the second part of the string with one of the extra non terminals
                         if (cflInput.get(i).get(j).length() > 2) {
                             cflInput.get(i).set(j, cflInput.get(i).get(j).replace(strings.get(x), extraNonTerminals.get(x)));
                         }
                     }
                 }
+                // increment the line number and create the new line
                 numLines++;
                 ArrayList<String> newLine = new ArrayList<String>();
                 newLine.add(extraNonTerminals.get(x));
                 newLine.add(strings.get(x));
                 cflInput.add(newLine);
             }
+            // remove any extra non terminals used so they are no longer available
             for (int i = strings.size()-1; i >= 0; i--){
                 extraNonTerminals.remove(i);
             }
@@ -627,12 +621,23 @@ public class main extends JFrame{
 
     }
 
+    /*
+	 * keepLoneTerminals()
+	 *
+	 * Remove any lowercase letters that are not alone.
+	 *
+	 * Replace with extra non terminals that are still available.
+	 *
+	 */
     public static void keepLoneTerminals(){
         Set<String> replaceChars = new HashSet<String>();
 
         for (int i = 0; i < numLines; i++) {
             for (int j = 1; j < cflInput.get(i).size(); j++) {
+                // if the entry is longer than one
                 if (cflInput.get(i).get(j).length() > 1){
+                    // look through each letter and if it's lowercase, add to
+                    // list of chars to be replaced
                     for (int x = 0; x < cflInput.get(i).get(j).length(); x++){
                         char letter = cflInput.get(i).get(j).charAt(x);
                         if (letter > 96 && letter < 123){
@@ -652,17 +657,22 @@ public class main extends JFrame{
             }
         }
 
+
         ArrayList<String> chars = new ArrayList<String>();
         chars.addAll(replaceChars);
 
+        // loop through all characters that need to be replaced, find them and
+        // actually replace
         for (int x = 0; x < chars.size(); x++){
             for (int i = 0; i < numLines; i++){
                 for (int j = 1; j < cflInput.get(i).size(); j++){
                     if (cflInput.get(i).get(j).length() > 1) {
+                        // replace with chars from list
                         cflInput.get(i).set(j, cflInput.get(i).get(j).replace(chars.get(x), extraNonTerminals.get(x)));
                     }
                 }
             }
+            // increment number of lines and create and add the new line
             numLines++;
             ArrayList<String> newLine = new ArrayList<String>();
             newLine.add(extraNonTerminals.get(x));
@@ -672,9 +682,18 @@ public class main extends JFrame{
 
     }
 
+    /*
+	 * checkTriples()
+	 *
+	 * Helper method returns true if no rules exist with more than
+	 * two characters.
+	 *
+	 */
     public static boolean checkTriples(){
         for (int i = 0; i < numLines; i++) {
             for (int j = 1; j < cflInput.get(i).size(); j++) {
+                // if the string is longer than two, we're still not
+                // in the right format.
                 if (cflInput.get(i).get(j).length() > 2){
                     return false;
                 }
@@ -683,13 +702,25 @@ public class main extends JFrame{
         return true;
     }
 
+    /*
+	 * removeDuplicates()
+	 *
+	 * Removes any duplicate letters or rules in the CFG
+	 * to make it more readable
+	 *
+	 */
     public static void removeDuplicateEntries(){
+        // for each line, add the right hand side rules to a hash
+        // set to remove the duplicates
         for (int i = 0; i < numLines; i++){
             String tempStartVar = cflInput.get(i).get(0);
             Set<String> tempLine = new HashSet<String>();
+
             for (int j = 1; j < cflInput.get(i).size(); j++){
                 tempLine.add(cflInput.get(i).get(j));
             }
+            // clear that line then replace it with the contents of the
+            // hash set
             cflInput.get(i).clear();
             cflInput.get(i).add(tempStartVar);
             cflInput.get(i).addAll(tempLine);
